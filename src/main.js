@@ -57,6 +57,9 @@ const spectral = [
   { name: "Violet", wavelength: 420, color: "#c567ff" }
 ];
 
+// Educational exaggeration so color separation is clearly visible on projectors.
+const VISUAL_DISPERSION_EXAGGERATION = 2.8;
+
 const lessons = {
   raindrop: [
     { action: "Click Animate Rays.", observe: "White light enters, reflects once, and exits as separated colors." },
@@ -295,9 +298,16 @@ function getSpectrumData() {
 
   return spectral.map((entry, idx) => {
     const fraction = idx / (spectral.length - 1);
-    const n = baseN + dispersion * fraction;
-    const rainbow = rainbowPrimaryAngleFromIndex(n);
-    return { ...entry, n, rainbowIncidentDeg: rainbow.incidentDeg, rainbowDeg: rainbow.rainbowDeg };
+    const nPhysical = baseN + dispersion * fraction;
+    const nVisual = baseN + dispersion * VISUAL_DISPERSION_EXAGGERATION * fraction;
+    const rainbow = rainbowPrimaryAngleFromIndex(nVisual);
+    return {
+      ...entry,
+      n: nPhysical,
+      nVisual,
+      rainbowIncidentDeg: rainbow.incidentDeg,
+      rainbowDeg: rainbow.rainbowDeg
+    };
   });
 }
 
@@ -395,7 +405,7 @@ function buildRaindropState(spectrum) {
 
   const rays = spectrum
     .map((row) => {
-      const trace = traceRaindropRay({ n: row.n, center, radius, beamHeight, incidentDeg: row.rainbowIncidentDeg });
+      const trace = traceRaindropRay({ n: row.nVisual, center, radius, beamHeight, incidentDeg: row.rainbowIncidentDeg });
       return trace ? { ...row, trace, metricAngle: trace.rainbowAngle } : null;
     })
     .filter(Boolean);
@@ -422,7 +432,7 @@ function buildPrismState(spectrum) {
 
   const rays = spectrum
     .map((row) => {
-      const trace = tracePrismRay({ n: row.n, prism, beamHeight });
+      const trace = tracePrismRay({ n: row.nVisual, prism, beamHeight });
       return trace ? { ...row, trace, metricAngle: trace.deviation } : null;
     })
     .filter(Boolean);
@@ -711,6 +721,7 @@ function renderDataAndExplanations(state) {
       <p><span class="highlight">Ground-observer mechanism:</span> For one eye direction, a higher droplet sends red to your eye while a lower droplet sends violet. That droplet-height mapping makes red appear above violet.</p>
       <p><span class="highlight">Angle reason:</span> Red exits at larger rainbow angle (${red.metricAngle.toFixed(2)} deg) than violet (${violet.metricAngle.toFixed(2)} deg), so red maps to the outer/top edge.</p>
       <p><span class="highlight">First refraction split:</span> Check the zoomed inset. Violet bends more toward the normal than red immediately at entry.</p>
+      <p><span class="highlight">Teaching note:</span> Ray separation is visually exaggerated (${VISUAL_DISPERSION_EXAGGERATION.toFixed(1)}x) to make dispersion obvious on classroom/projector screens.</p>
     `;
   } else {
     outputs.angleHeader.textContent = "Deviation";
@@ -735,6 +746,7 @@ function renderDataAndExplanations(state) {
       <p><span class="highlight">Prism splitting:</span> White light refracts at entry and exit faces. Different wavelengths bend by different amounts.</p>
       <p><span class="highlight">Monotonic order:</span> Red bends less (lower n), violet bends more (higher n). Order is predictable even when you rotate the prism.</p>
       <p><span class="highlight">Current values:</span> red n=${red.n.toFixed(4)}, violet n=${violet.n.toFixed(4)}.</p>
+      <p><span class="highlight">Teaching note:</span> Visual separation is exaggerated (${VISUAL_DISPERSION_EXAGGERATION.toFixed(1)}x) so the color fan is easier to see.</p>
     `;
   }
 }
