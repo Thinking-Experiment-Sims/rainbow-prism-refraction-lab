@@ -458,17 +458,17 @@ function drawHugeRay(path, color, width, alpha, glow = 24) {
 
 function drawObserverOrderOverlay() {
   const cx = 170;
-  const cy = canvas.height - 110;
-  const boxTop = canvas.height - 250;
+  const cy = canvas.height - 98;
+  const boxTop = canvas.height - 272;
 
   ctx.save();
   ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
-  ctx.fillRect(25, boxTop, 320, 200);
+  ctx.fillRect(25, boxTop, 360, 236);
   ctx.strokeStyle = "rgba(18, 49, 64, 0.28)";
-  ctx.strokeRect(25, boxTop, 320, 200);
+  ctx.strokeRect(25, boxTop, 360, 236);
 
   ctx.strokeStyle = "#ff4040";
-  ctx.lineWidth = 10;
+  ctx.lineWidth = 9;
   ctx.beginPath();
   ctx.arc(cx, cy, 118, Math.PI * 1.05, Math.PI * 1.95, false);
   ctx.stroke();
@@ -480,18 +480,19 @@ function drawObserverOrderOverlay() {
   ctx.stroke();
 
   ctx.fillStyle = "#123140";
-  ctx.font = "700 16px 'Avenir Next', 'Segoe UI', sans-serif";
+  ctx.font = "700 15px 'Avenir Next', 'Segoe UI', sans-serif";
   ctx.fillText("Observer Ground Mechanism (Primary Rainbow)", 34, boxTop + 22);
 
-  const eye = { x: 68, y: boxTop + 122 };
-  const highDrop = { x: 252, y: boxTop + 84 };
-  const lowDrop = { x: 252, y: boxTop + 132 };
+  const eye = { x: 74, y: boxTop + 136 };
+  const highDrop = { x: 284, y: boxTop + 92 };
+  const lowDrop = { x: 284, y: boxTop + 152 };
 
   ctx.fillStyle = "#123140";
   ctx.beginPath();
   ctx.arc(eye.x, eye.y, 6, 0, Math.PI * 2);
   ctx.fill();
-  ctx.fillText("Observer eye", eye.x - 18, eye.y + 22);
+  ctx.font = "600 12px 'Avenir Next', 'Segoe UI', sans-serif";
+  ctx.fillText("Observer eye", eye.x - 20, eye.y + 22);
 
   ctx.fillStyle = "rgba(126, 183, 255, 0.45)";
   ctx.beginPath();
@@ -502,26 +503,41 @@ function drawObserverOrderOverlay() {
   ctx.fill();
   ctx.fillStyle = "#123140";
   ctx.font = "600 13px 'Avenir Next', 'Segoe UI', sans-serif";
-  ctx.fillText("higher drop", highDrop.x - 26, highDrop.y - 14);
-  ctx.fillText("lower drop", lowDrop.x - 24, lowDrop.y + 22);
+  ctx.fillText("higher drop", highDrop.x - 29, highDrop.y - 14);
+  ctx.fillText("lower drop", lowDrop.x - 27, lowDrop.y + 22);
+
+  // Dashed lines indicate nearby non-dominant colors that miss the eye for that drop.
+  ctx.setLineDash([5, 5]);
+  ctx.strokeStyle = "rgba(80, 90, 110, 0.6)";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(highDrop.x - 6, highDrop.y + 2);
+  ctx.lineTo(eye.x + 8, eye.y + 18);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(lowDrop.x - 6, lowDrop.y - 2);
+  ctx.lineTo(eye.x + 8, eye.y - 14);
+  ctx.stroke();
+  ctx.setLineDash([]);
 
   ctx.strokeStyle = "#ff4040";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 3.5;
   ctx.beginPath();
-  ctx.moveTo(highDrop.x - 8, highDrop.y);
+  ctx.moveTo(highDrop.x - 8, highDrop.y - 1);
   ctx.lineTo(eye.x + 8, eye.y - 2);
   ctx.stroke();
 
   ctx.strokeStyle = "#c567ff";
   ctx.beginPath();
-  ctx.moveTo(lowDrop.x - 8, lowDrop.y);
-  ctx.lineTo(eye.x + 8, eye.y + 3);
+  ctx.moveTo(lowDrop.x - 8, lowDrop.y + 1);
+  ctx.lineTo(eye.x + 8, eye.y + 4);
   ctx.stroke();
 
   ctx.fillStyle = "#123140";
-  ctx.font = "700 13px 'Avenir Next', 'Segoe UI', sans-serif";
-  ctx.fillText("Red ray reaches eye from a higher drop.", 34, boxTop + 168);
-  ctx.fillText("Violet reaches eye from a lower drop.", 34, boxTop + 186);
+  ctx.font = "700 12px 'Avenir Next', 'Segoe UI', sans-serif";
+  ctx.fillText("1) For one eye direction, each drop sends one dominant color.", 34, boxTop + 178);
+  ctx.fillText("2) Higher drop sends red to this eye direction.", 34, boxTop + 196);
+  ctx.fillText("3) Lower drop sends violet to this eye direction.", 34, boxTop + 214);
   ctx.restore();
 }
 
@@ -691,8 +707,9 @@ function renderDataAndExplanations(state) {
     const violet = getRowByName(ordered, "Violet", ordered.length - 1);
 
     outputs.explanation.innerHTML = `
-      <p><span class="highlight">Important clarification:</span> The local ray drawing around one drop is not the same as the sky arc orientation. Use the Observer Sky View box for top/bottom in the rainbow you actually see.</p>
-      <p><span class="highlight">Why red is top in the primary rainbow:</span> Red exits at larger rainbow angle (${red.metricAngle.toFixed(2)} deg) than violet (${violet.metricAngle.toFixed(2)} deg), so red maps to the outer/top edge.</p>
+      <p><span class="highlight">Important clarification:</span> A sky rainbow comes from many droplets. The local ray sketch of one droplet does not by itself define sky top/bottom.</p>
+      <p><span class="highlight">Ground-observer mechanism:</span> For one eye direction, a higher droplet sends red to your eye while a lower droplet sends violet. That droplet-height mapping makes red appear above violet.</p>
+      <p><span class="highlight">Angle reason:</span> Red exits at larger rainbow angle (${red.metricAngle.toFixed(2)} deg) than violet (${violet.metricAngle.toFixed(2)} deg), so red maps to the outer/top edge.</p>
       <p><span class="highlight">First refraction split:</span> Check the zoomed inset. Violet bends more toward the normal than red immediately at entry.</p>
     `;
   } else {
