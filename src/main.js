@@ -459,12 +459,13 @@ function drawHugeRay(path, color, width, alpha, glow = 24) {
 function drawObserverOrderOverlay() {
   const cx = 170;
   const cy = canvas.height - 110;
+  const boxTop = canvas.height - 250;
 
   ctx.save();
   ctx.fillStyle = "rgba(255, 255, 255, 0.86)";
-  ctx.fillRect(25, canvas.height - 250, 320, 200);
+  ctx.fillRect(25, boxTop, 320, 200);
   ctx.strokeStyle = "rgba(18, 49, 64, 0.28)";
-  ctx.strokeRect(25, canvas.height - 250, 320, 200);
+  ctx.strokeRect(25, boxTop, 320, 200);
 
   ctx.strokeStyle = "#ff4040";
   ctx.lineWidth = 10;
@@ -480,10 +481,47 @@ function drawObserverOrderOverlay() {
 
   ctx.fillStyle = "#123140";
   ctx.font = "700 16px 'Avenir Next', 'Segoe UI', sans-serif";
-  ctx.fillText("Observer Sky View (Primary Rainbow)", 38, canvas.height - 220);
-  ctx.fillText("Red = outer/top edge", 38, canvas.height - 194);
-  ctx.fillText("Violet = inner/bottom edge", 38, canvas.height - 172);
-  ctx.fillText("Local drop ray picture is not the sky arc by itself.", 38, canvas.height - 148);
+  ctx.fillText("Observer Ground Mechanism (Primary Rainbow)", 34, boxTop + 22);
+
+  const eye = { x: 68, y: boxTop + 122 };
+  const highDrop = { x: 252, y: boxTop + 84 };
+  const lowDrop = { x: 252, y: boxTop + 132 };
+
+  ctx.fillStyle = "#123140";
+  ctx.beginPath();
+  ctx.arc(eye.x, eye.y, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillText("Observer eye", eye.x - 18, eye.y + 22);
+
+  ctx.fillStyle = "rgba(126, 183, 255, 0.45)";
+  ctx.beginPath();
+  ctx.arc(highDrop.x, highDrop.y, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(lowDrop.x, lowDrop.y, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#123140";
+  ctx.font = "600 13px 'Avenir Next', 'Segoe UI', sans-serif";
+  ctx.fillText("higher drop", highDrop.x - 26, highDrop.y - 14);
+  ctx.fillText("lower drop", lowDrop.x - 24, lowDrop.y + 22);
+
+  ctx.strokeStyle = "#ff4040";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(highDrop.x - 8, highDrop.y);
+  ctx.lineTo(eye.x + 8, eye.y - 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = "#c567ff";
+  ctx.beginPath();
+  ctx.moveTo(lowDrop.x - 8, lowDrop.y);
+  ctx.lineTo(eye.x + 8, eye.y + 3);
+  ctx.stroke();
+
+  ctx.fillStyle = "#123140";
+  ctx.font = "700 13px 'Avenir Next', 'Segoe UI', sans-serif";
+  ctx.fillText("Red ray reaches eye from a higher drop.", 34, boxTop + 168);
+  ctx.fillText("Violet reaches eye from a lower drop.", 34, boxTop + 186);
   ctx.restore();
 }
 
