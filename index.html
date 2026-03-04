@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rainbow and Prism Refraction Lab</title>
+    <meta
+      name="description"
+      content="Guided high-school simulation for rainbow formation, prism dispersion, and wavelength-dependent refraction."
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="https://vladimirlopez.github.io/the-thinking-experiment/assets/favicon-32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="https://vladimirlopez.github.io/the-thinking-experiment/assets/favicon-16.png"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero card">
+        <div class="hero-top">
+          <p class="eyebrow">On-Level Physics | Refraction & Dispersion</p>
+          <button id="themeBtn" type="button">Switch to Dark Mode</button>
+        </div>
+        <h1>Rainbow and Prism Refraction Lab</h1>
+        <p>
+          Lecture-ready simulation for high school classes. Compare white-light splitting in a
+          <strong>regular prism</strong> and a <strong>raindrop</strong>, then explain why color order is fixed.
+        </p>
+      </header>
+
+      <main class="layout">
+        <section class="card controls" aria-label="Simulation controls">
+          <h2>Controls</h2>
+          <div class="control-grid">
+            <label>
+              Simulation mode
+              <select id="modeSelect">
+                <option value="raindrop">Raindrop (Rainbow)</option>
+                <option value="prism">Regular Prism</option>
+              </select>
+            </label>
+
+            <label>
+              Base refractive index (red)
+              <input id="baseN" type="range" min="1.300" max="1.620" step="0.001" value="1.331" />
+              <span class="value" id="baseNValue">1.331</span>
+            </label>
+
+            <label>
+              Dispersion range (red to violet)
+              <input id="dispersion" type="range" min="0.005" max="0.030" step="0.001" value="0.012" />
+              <span class="value" id="dispersionValue">0.012</span>
+            </label>
+
+            <label>
+              Beam height
+              <input id="beamHeight" type="range" min="-140" max="140" step="1" value="0" />
+              <span class="value" id="beamHeightValue">0 px</span>
+            </label>
+
+            <label>
+              Raindrop radius
+              <input id="dropRadius" type="range" min="90" max="220" step="1" value="150" />
+              <span class="value" id="dropRadiusValue">150 px</span>
+            </label>
+          </div>
+
+          <div class="action-row two">
+            <button id="resetBtn" type="button">Reset Mode</button>
+            <button id="animateBtn" type="button">Animate Rays</button>
+          </div>
+
+          <h3>Teacher Mode (Auto Lecture)</h3>
+          <div class="action-row">
+            <button id="teacherPlayBtn" class="primary" type="button">Start Teacher Mode</button>
+            <button id="teacherPauseBtn" type="button">Pause</button>
+            <button id="teacherNextBtn" type="button">Next Cue</button>
+          </div>
+          <p class="status" id="teacherStatus" data-tone="ok">Teacher mode ready.</p>
+          <p class="status" id="teacherCue" data-tone="ok">Cue: waiting to start.</p>
+
+          <h3>Student Guide (Always On)</h3>
+          <p class="status" id="guideStep" data-tone="ok"></p>
+          <p class="status" id="guideAction" data-tone="ok"></p>
+          <p class="status" id="guideObserve" data-tone="ok"></p>
+          <div class="action-row two">
+            <button id="prevStepBtn" type="button">Previous Step</button>
+            <button id="nextStepBtn" type="button">Next Step</button>
+          </div>
+
+          <p id="contextHint" class="status" data-tone="ok"></p>
+
+          <h3>How To Use This</h3>
+          <div class="help-tabs" role="tablist" aria-label="Help tabs">
+            <button id="tabBtnOverview" class="help-tab-btn active" type="button" data-tab="overview">Overview</button>
+            <button id="tabBtnControls" class="help-tab-btn" type="button" data-tab="controls">Controls</button>
+            <button id="tabBtnTeacher" class="help-tab-btn" type="button" data-tab="teacher">Teacher Mode</button>
+          </div>
+
+          <section id="helpOverview" class="help-panel active" aria-live="polite">
+            <p>1. Choose a mode: <strong>Raindrop</strong> or <strong>Regular Prism</strong>.</p>
+            <p>2. Click <strong>Animate Rays</strong> to make paths easier to track.</p>
+            <p>3. Use your <strong>mouse wheel on the canvas</strong> to zoom.</p>
+            <p>4. In prism mode, <strong>click-drag on the canvas</strong> to rotate the prism.</p>
+            <p>5. Read the table and the explanation under the canvas.</p>
+          </section>
+
+          <section id="helpControls" class="help-panel" aria-live="polite">
+            <p><strong>Base refractive index:</strong> shifts how strongly all colors bend.</p>
+            <p><strong>Dispersion range:</strong> controls separation between red and violet.</p>
+            <p><strong>Beam height:</strong> changes where light enters the prism/drop.</p>
+            <p><strong>Raindrop radius:</strong> changes drop size (raindrop mode only).</p>
+            <p><strong>Mouse wheel on canvas:</strong> zoom in/out around the model center.</p>
+            <p><strong>Mouse drag on canvas:</strong> rotates the triangular prism (prism mode only).</p>
+          </section>
+
+          <section id="helpTeacher" class="help-panel" aria-live="polite">
+            <p><strong>Start Teacher Mode:</strong> runs an automatic 8-cue lecture sequence.</p>
+            <p><strong>Pause:</strong> pause/resume the auto-advance timer.</p>
+            <p><strong>Next Cue:</strong> jump to the next talking point immediately.</p>
+            <p>The current cue text tells you exactly what to say and what students should notice.</p>
+          </section>
+        </section>
+
+        <section class="card graph-card">
+          <h2 id="sceneTitle">Raindrop Model</h2>
+          <p class="subtle" id="sceneSubtitle">Projector mode: thick, high-contrast rays.</p>
+          <canvas
+            id="simCanvas"
+            class="graph big-canvas"
+            width="1360"
+            height="820"
+            aria-label="Refraction simulation canvas"
+          ></canvas>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Color</th>
+                  <th>&lambda; (nm)</th>
+                  <th>n</th>
+                  <th id="angleHeader">Rainbow angle</th>
+                </tr>
+              </thead>
+              <tbody id="dataBody"></tbody>
+            </table>
+          </div>
+
+          <p id="orderStatement" class="status" data-tone="ok"></p>
+
+          <section id="explanation" class="explanation"></section>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
