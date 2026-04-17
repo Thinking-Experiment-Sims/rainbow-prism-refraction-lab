@@ -1,4 +1,5 @@
 :root {
+
   --bg-950: #e9f4fb;
   --bg-900: #fff4dd;
   --bg-800: #ffffff;
@@ -24,6 +25,7 @@
   --shadow: 0 12px 24px rgba(12, 54, 68, 0.12);
   --canvas-bg: linear-gradient(180deg, #fbfeff, #eef5fa);
   --ray-glow: rgba(255, 255, 255, 0.65);
+
 }
 
 body.dark-mode {
@@ -48,14 +50,10 @@ body.dark-mode {
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
-  color: var(--ink);
-  background:
-    radial-gradient(1200px 700px at 8% 2%, rgba(19, 143, 176, 0.18), transparent 62%),
-    radial-gradient(900px 600px at 92% 98%, rgba(220, 132, 32, 0.18), transparent 66%),
-    linear-gradient(165deg, var(--bg-top), var(--bg-bottom));
+  font-family: "Inter", "IBM Plex Sans", sans-serif;
+  color: var(--text-100);
+  background: #e9f4fb;
+  line-height: 1.45;
 }
 
 h1,
@@ -148,8 +146,9 @@ button {
   background: linear-gradient(160deg, #0d839f, #0b5f77);
   color: #ffffff;
   font-weight: 700;
-
-  font: inherit;
+  border: 1px solid #0a5d74;
+  padding: 0.58rem 0.82rem;
+  cursor: pointer;
 }
 
 select,
@@ -173,14 +172,9 @@ button {
   background: linear-gradient(160deg, #0d839f, #0b5f77);
   color: #ffffff;
   font-weight: 700;
-
-  border: 1px solid #9dbac5;
-  border-radius: 8px;
-  padding: 0.58rem 0.62rem;
-  background: #f6fbfd;
-  color: var(--ink);
+  border: 1px solid #0a5d74;
+  padding: 0.58rem 0.82rem;
   cursor: pointer;
-  font-weight: 600;
 }
 
 body.dark-mode button {
@@ -188,9 +182,9 @@ body.dark-mode button {
   background: linear-gradient(160deg, #0d839f, #0b5f77);
   color: #ffffff;
   font-weight: 700;
-
-  border-color: var(--border);
-  background: #1b2739;
+  border: 1px solid #0a5d74;
+  padding: 0.58rem 0.82rem;
+  cursor: pointer;
 }
 
 button.primary {
