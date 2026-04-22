@@ -7,7 +7,6 @@ const controls = {
   dispersion: document.getElementById("dispersion"),
   beamHeight: document.getElementById("beamHeight"),
   dropRadius: document.getElementById("dropRadius"),
-  themeBtn: document.getElementById("themeBtn"),
   resetBtn: document.getElementById("resetBtn"),
   animateBtn: document.getElementById("animateBtn"),
   teacherPlayBtn: document.getElementById("teacherPlayBtn"),
@@ -147,7 +146,6 @@ const camera = { zoom: 1.0, prismRotate: 0 };
 const pointer = { dragging: false, lastX: 0 };
 
 let animate = false;
-let isDarkMode = false;
 let stepIndexByMode = { raindrop: 0, prism: 0 };
 
 function clamp(value, min, max) {
@@ -810,11 +808,6 @@ function applyModeDefaults() {
   updateModeUI();
 }
 
-function updateTheme() {
-  document.body.classList.toggle("dark-mode", isDarkMode);
-  controls.themeBtn.textContent = isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
-}
-
 function applyTeacherCue(index, nowMs) {
   const cue = teacherScript[index];
   if (!cue) return;
@@ -927,11 +920,6 @@ function setupEvents() {
     applyModeDefaults();
   });
 
-  controls.themeBtn.addEventListener("click", () => {
-    isDarkMode = !isDarkMode;
-    updateTheme();
-  });
-
   controls.resetBtn.addEventListener("click", () => {
     if (teacherState.running) stopTeacherMode("Teacher mode stopped by reset.");
     applyModeDefaults();
@@ -990,5 +978,4 @@ setupCanvasMouse();
 setMode("raindrop");
 applyModeDefaults();
 setHelpTab("overview");
-updateTheme();
-requestAnimationFrame(render);
+  requestAnimationFrame(render);
